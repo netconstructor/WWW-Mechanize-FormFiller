@@ -4,7 +4,7 @@ use Carp;
 
 use vars qw( $VERSION @ISA );
 
-$VERSION = 0.03;
+$VERSION = '0.04';
 @ISA = ();
 
 sub load_value_class {
@@ -108,6 +108,30 @@ sub fill_form {
   };
 };
 
+sub fillout {
+  my $self_class = shift;
+  my $self = ref $self_class ? $self_class : $self_class->new();
+  my $form;
+  
+  while (@_) {
+    if (ref $_[0] and eval { UNIVERSAL::isa($_[0],'HTML::Form') }) {
+      croak "Two HTML::Form objects passed into fillout()" if ($form);
+      $form = shift;
+    } else {
+      my $field = shift;
+      if (ref $_[0] eq 'ARRAY') {
+        my $args = shift;
+        $self->add_filler($field,@$args);
+      } else {
+        my $value = shift;
+        $self->add_filler($field,'Fixed',$value);
+      };
+    };
+  };
+  $self->fill_form($form) if $form;
+  $self;
+};
+
 1;
 __END__
 
@@ -119,44 +143,46 @@ WWW::Mechanize::FormFiller - framework to automate HTML forms
 
 =begin example
 
-  use strict;
   use WWW::Mechanize::FormFiller;
   use HTML::Form;
 
   # Create a form filler that fills out google for my homepage
 
   my $html = "<html><body><form name='f' action='http://www.google.com/search'>
-      <input type='text' name='q'>
-      <input type='submit' name=btnG value='Google Search'>
+      <input type='text' name='q' value='' />
+      <input type='submit' name=btnG value='Google Search' />
       <input type='hidden' name='secretValue' value='0xDEADBEEF' />
     </form></body></html>";
 
-  my $f = WWW::Mechanize::FormFiller->new( q => [Fixed => "Corion Homepage"] );
+  my $f = WWW::Mechanize::FormFiller->new( 
+      values => [
+                 [q => Fixed => "Corion Homepage"],
+  							]);
   my $form = HTML::Form->parse($html,"http://www.google.com/intl/en/");
   $f->fill_form($form);
 
   my $request = $form->click("btnG");
   # Now we have a complete HTTP request, which we can hand off to
   # LWP::UserAgent or (preferrably) WWW::Mechanize
-
+  
   print $request->as_string;
 
 =end example
 
 =for example_testing
   $_STDOUT_ =~ s/[\x0a\x0d]+$//;
-  is($_STDOUT_,"GET http://www.google.com/search?btnG=Google+Search&secretValue=0xDEADBEEF",'Got the expected HTTP query string');
+  is($_STDOUT_,"GET http://www.google.com/search?q=Corion+Homepage&btnG=Google+Search&secretValue=0xDEADBEEF",'Got the expected HTTP query string');
 
 You are not limited to fixed form values - callbacks and interactive
 editing are also already provided :
 
-=for example_testing
+=for example
   no warnings 'once';
   require HTML::Form;
   require WWW::Mechanize::FormFiller::Value::Interactive;
-  *WWW::Mechanize::FormFiller::Value::Interactive::ask_value = sub { "s3[r3t" }; #<-- not a good password
+  local *WWW::Mechanize::FormFiller::Value::Interactive::ask_value = sub { "s3[r3t" }; #<-- not a good password
 
-=begin example
+=for example begin
 
   # Create a form filler that asks us for the password
 
@@ -180,7 +206,7 @@ editing are also already provided :
   # LWP::UserAgent or (preferrably) WWW::Mechanize
   print $request->as_string;
 
-=end example
+=for example end
 
 =for example_testing
   isa_ok($f,"WWW::Mechanize::FormFiller");
@@ -222,8 +248,8 @@ Example :
   # and asks for a password
   my $f = WWW::Mechanize::FormFiller->new(
                        values => [[ login => Fixed => "corion" ],
-                                  [ password => Interactive => [],
-                                 ]]);
+                                  [ password => Interactive => []],
+                                 ]);
 
   # This filler only fills in a username
   # if it is the empty string, and still asks for the password :
@@ -254,6 +280,74 @@ Sets the field values in FORM to the values returned by the
 C<WWW::Mechanize::FormFiller::Value> elements. FORM should be
 of type HTML::Forms or respond to the same interface.
 
+=item fillout @ARGS
+
+This is a very dwimmy routine that allows you to intuitively
+set up values and fill out a form, if needed. It works as both
+a constructor and a method. The parameters are decoded according
+to the following examples :
+
+=for example begin
+
+  $filler = WWW::Mechanize::FormFiller->new();
+  $filler->fillout(
+    # For the the simple case, assumed 'Fixed' class,
+    name => 'Mark',
+
+    # With an array reference, create and fill with the right kind of object.
+    widget_id => [ 'Random', (1..5) ],
+  );
+
+=for example end
+
+=for example_testing
+  isa_ok($filler,"WWW::Mechanize::FormFiller");  
+
+=for example
+  $form = HTML::Form->parse('<html><body><form>
+    <input name="name" type="text" />
+    <input name="motto" type="text" />
+  </form></body></html>','http://www.example.com/');
+
+=for example begin
+
+  $filler = WWW::Mechanize::FormFiller->new();
+  $filler->fillout(
+    # If the first parameter isa HTML::Form, it is 
+    # filled out directly
+    $form,
+    name => 'Mark',
+    motto => [ 'Random::Word', size => 5 ],
+  );
+  
+=for example end
+
+=for example_testing
+  isa_ok($filler,"WWW::Mechanize::FormFiller");
+  is($form->value('name'),'Mark','Name is set');
+  like($form->value('motto'),qr/^\w+( \w+){3} \w+$/,'Motto is set');
+
+=for example
+  $form2 = HTML::Form->parse('<html><body><form>
+    <input name="name" type="text" />
+    <input name="motto" type="text" />','http://www.example.com/');
+
+=for example begin
+
+  # This works as a direct constructor as well
+  WWW::Mechanize::FormFiller->fillout(
+    $form2,  
+    name => 'Mark',
+    motto => [ 'Random::Word', size => 5 ],
+  );
+
+=for example end
+
+=for example_testing
+  isa_ok($filler,"WWW::Mechanize::FormFiller");
+  is($form2->value('name'),'Mark','Name is set');
+  like($form2->value('motto'),qr/^\w+( \w+){3} \w+$/,'Motto is set');
+
 =back
 
 =head2 Value subclasses
@@ -274,6 +368,12 @@ The following WWW::Mechanize::FormFiller::Value subclasses are currently distrib
 
 =item L<WWW::Mechanize::FormFiller::Value::Random>
 
+=item L<WWW::Mechanize::FormFiller::Value::Random::Word>
+
+=item L<WWW::Mechanize::FormFiller::Value::Random::Chars>
+
+=item L<WWW::Mechanize::FormFiller::Value::Random::Date>
+
 =back
 
 =head2 EXPORT
@@ -291,6 +391,8 @@ Copyright (C) 2002,2003 Max Maischein
 Max Maischein, E<lt>corion@cpan.orgE<gt>
 
 Please contact me if you find bugs or otherwise improve the module. More tests are also very welcome !
+
+Bug reports are best done via RT at https://rt.cpan.org
 
 =head1 SEE ALSO
 

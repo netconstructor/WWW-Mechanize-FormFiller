@@ -22,7 +22,7 @@ sub READLINE {}
 sub GETC {}
 sub BINMODE {}
 
-my $Original_File = 'D:lib\WWW\Mechanize\FormFiller\Value\Callback.pm';
+my $Original_File = 'D:lib\WWW\Mechanize\FormFiller\Value\Random\Date.pm';
 
 package main;
 
@@ -38,9 +38,9 @@ SKIP: {
   skip "Need module WWW::Mechanize::FormFiller to run this test", 1
     if $@;
 
-  # Check for module WWW::Mechanize::FormFiller::Value::Callback
-  eval { require WWW::Mechanize::FormFiller::Value::Callback };
-  skip "Need module WWW::Mechanize::FormFiller::Value::Callback to run this test", 1
+  # Check for module WWW::Mechanize::FormFiller::Value::Random::Date
+  eval { require WWW::Mechanize::FormFiller::Value::Random::Date };
+  skip "Need module WWW::Mechanize::FormFiller::Value::Random::Date to run this test", 1
     if $@;
 
 
@@ -51,28 +51,24 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 34 lib/WWW/Mechanize/FormFiller/Value/Callback.pm
+#line 56 lib/WWW/Mechanize/FormFiller/Value/Random/Date.pm
 
   use WWW::Mechanize::FormFiller;
-  use WWW::Mechanize::FormFiller::Value::Callback;
+  use WWW::Mechanize::FormFiller::Value::Random::Date;
 
   my $f = WWW::Mechanize::FormFiller->new();
 
-  # Create a default value for the HTML field "login"
-  # This will put the current login name into the login field
+  # Create a random value for the HTML field "born"
 
-  sub find_login {
-    getlogin || getpwuid($<) || "Kilroy";
-  };
-
-  my $login = WWW::Mechanize::FormFiller::Value::Callback->new( login => \&find_login );
-  $f->add_value( login => $login );
+  my $born = WWW::Mechanize::FormFiller::Value::Random::Date->new(
+    born => string => '%Y%m%d', min => '20000101', max => '20373112' );
+  $f->add_value( born => $born );
 
   # Alternatively take the following shorthand, which adds the
   # field to the list as well :
 
-  # "If there is no password, put a nice number there
-  my $password = $f->add_filler( password => Callback => sub { int rand(90) + 10 } );
+  # If there is no password, put a random one out of the list there
+  my $last_here = $f->add_filler( last_here => Random::Date => string => '%H%M%S', min => '000000', max => 'now');
 
 
 
@@ -81,7 +77,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 34");
+is($@, '', "example from line 56");
 
 };
 SKIP: {
@@ -96,9 +92,9 @@ SKIP: {
   skip "Need module WWW::Mechanize::FormFiller to run this test", 1
     if $@;
 
-  # Check for module WWW::Mechanize::FormFiller::Value::Callback
-  eval { require WWW::Mechanize::FormFiller::Value::Callback };
-  skip "Need module WWW::Mechanize::FormFiller::Value::Callback to run this test", 1
+  # Check for module WWW::Mechanize::FormFiller::Value::Random::Date
+  eval { require WWW::Mechanize::FormFiller::Value::Random::Date };
+  skip "Need module WWW::Mechanize::FormFiller::Value::Random::Date to run this test", 1
     if $@;
 
 
@@ -106,42 +102,36 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 34 lib/WWW/Mechanize/FormFiller/Value/Callback.pm
+#line 56 lib/WWW/Mechanize/FormFiller/Value/Random/Date.pm
 
   use WWW::Mechanize::FormFiller;
-  use WWW::Mechanize::FormFiller::Value::Callback;
+  use WWW::Mechanize::FormFiller::Value::Random::Date;
 
   my $f = WWW::Mechanize::FormFiller->new();
 
-  # Create a default value for the HTML field "login"
-  # This will put the current login name into the login field
+  # Create a random value for the HTML field "born"
 
-  sub find_login {
-    getlogin || getpwuid($<) || "Kilroy";
-  };
-
-  my $login = WWW::Mechanize::FormFiller::Value::Callback->new( login => \&find_login );
-  $f->add_value( login => $login );
+  my $born = WWW::Mechanize::FormFiller::Value::Random::Date->new(
+    born => string => '%Y%m%d', min => '20000101', max => '20373112' );
+  $f->add_value( born => $born );
 
   # Alternatively take the following shorthand, which adds the
   # field to the list as well :
 
-  # "If there is no password, put a nice number there
-  my $password = $f->add_filler( password => Callback => sub { int rand(90) + 10 } );
+  # If there is no password, put a random one out of the list there
+  my $last_here = $f->add_filler( last_here => Random::Date => string => '%H%M%S', min => '000000', max => 'now');
 
 
 
 
   require HTML::Form;
   my $form = HTML::Form->parse('<html><body><form method=get action=/>
-  <input type=text name=login />
-  <input type=text name=password />
+  <input type=text name=born />
+  <input type=text name=last_here />
   </form></body></html>','http://www.example.com/');
   $f->fill_form($form);
-  my $login_str = getlogin || getpwuid($<) || "Kilroy";
-  is( $form->value('login'), $login_str, "Login gets set");
-  cmp_ok( $form->value('password'), '<', 100, "Password gets set");
-  cmp_ok( $form->value('password'), '>', 9, "Password gets set");
+  like( $form->value('born'), qr/^(\d{8})$/, "born gets set");
+  like( $form->value('last_here'), qr/^(\d{6})$/, "last_here gets set");
 
     undef $main::_STDOUT_;
     undef $main::_STDERR_;

@@ -1,5 +1,17 @@
 Revision history for Perl extension WWW::Mechanize::FormFiller.
 
+0.04  20030517
+  - Fixed Makefile.PL for Perl 5.8.0
+  - Fixed inline tests
+  - Fixed inline examples so they actually show in the Pod
+  - Added more inline tests to test the synopses
+  - New prerequisite: Data::Random - to fill out forms with
+    better random data
+  - Added custom random date generation
+  - Added 'use strict' to all FormFiller::Value::* modules (only cosmetic)
+  - Added WWW::Mechanize::FormFiller::fillout, the dwim routine to
+    fill out forms, suggested by Mark Stosberg. Thanks !
+
 0.02  20030217
   - More tests
   - Inline tests

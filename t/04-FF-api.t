@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 24;
+use Test::More tests => 33;
 
 use_ok("WWW::Mechanize::FormFiller");
 
@@ -8,7 +8,7 @@ isa_ok($f,"WWW::Mechanize::FormFiller");
 
 # Now check our published API :
 my $meth;
-for $meth (qw(add_filler add_value fill_form)) {
+for $meth (qw(add_filler add_value fill_form fillout )) {
   can_ok($f,$meth);
 };
 
@@ -74,4 +74,55 @@ my $croaked;
   isnt($croaked,undef,"add_filler croaks on invalid parameters");
   like($croaked,qr"A value must have at least a class name and a field name \(which may be undef though\)","Passing an empty classname to add_filler raises an error");
   undef $croaked;
+};
+
+SKIP: {
+  eval { require HTML::Form; };
+  skip "Need HTML::Form to test fillout()", 2
+    if $@;
+  my $form = HTML::Form->parse('<form></form>','http://www.example.com');
+  {
+    local *Carp::croak = sub { die @_};
+    eval { $f = WWW::Mechanize::FormFiller->fillout($form,$form); };
+    $croaked = $@;
+    isnt($croaked,undef,"fillout croaks on double form");
+    like($croaked,qr"Two HTML::Form objects passed into fillout\(\)","Passing two forms to fillout raises an error");
+    undef $croaked;
+  };
+};
+
+SKIP: {
+  eval { require HTML::Form; };
+  skip "Need HTML::Form to test fillout()", 2
+    if $@;
+  my $form = HTML::Form->parse('<form>
+  <input name=name value=none />
+  </form>','http://www.example.com');
+  $f = WWW::Mechanize::FormFiller->fillout($form, name => 'Mark' );
+  isa_ok($f,'WWW::Mechanize::FormFiller');
+  is($form->value('name'),'Mark','fillout has a default of Fixed');
+};
+
+SKIP: {
+  eval { require HTML::Form; };
+  skip "Need HTML::Form to test fillout()", 2
+    if $@;
+  my $form = HTML::Form->parse('<form>
+  <input name=name value=none />
+  </form>','http://www.example.com');
+  $f = WWW::Mechanize::FormFiller->fillout($form, name => [ Random => 'Mark' ]);
+  isa_ok($f,'WWW::Mechanize::FormFiller');
+  is($form->value('name'),'Mark','Other classes work as well');
+};
+
+SKIP: {
+  eval { require HTML::Form; };
+  skip "Need HTML::Form to test fillout()", 2
+    if $@;
+  my $form = HTML::Form->parse('<form>
+  <input name=name value=none />
+  </form>','http://www.example.com');
+  $f = WWW::Mechanize::FormFiller->fillout(name => [ Random => 'Mark' ], $form);
+  isa_ok($f,'WWW::Mechanize::FormFiller');
+  is($form->value('name'),'Mark','The place of $form is irrelevant');
 };

@@ -51,7 +51,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 27 lib/WWW/Mechanize/FormFiller/Value/Keep.pm
+#line 28 lib/WWW/Mechanize/FormFiller/Value/Keep.pm
 
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Keep;
@@ -59,18 +59,75 @@ eval q{
   my $f = WWW::Mechanize::FormFiller->new();
 
   # Leave the login field untouched
-  my $login = WWW::Mechanize::FormFiller::Value::Keep->new( login );
+  my $login = WWW::Mechanize::FormFiller::Value::Keep->new( 'login' );
   $f->add_value( login => $login );
 
   # Alternatively take the following shorthand, which adds the
   # field to the list as well :
-  my $sessionid = $f->add_filler( session => Keep );
+  my $sessionid = $f->add_filler( session => 'Keep' );
+
+
+
 
 ;
 
   }
 };
-is($@, '', "example from line 27");
+is($@, '', "example from line 28");
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+      # Check for module HTML::Form
+  eval { require HTML::Form };
+  skip "Need module HTML::Form to run this test", 1
+    if $@;
+
+  # Check for module WWW::Mechanize::FormFiller
+  eval { require WWW::Mechanize::FormFiller };
+  skip "Need module WWW::Mechanize::FormFiller to run this test", 1
+    if $@;
+
+  # Check for module WWW::Mechanize::FormFiller::Value::Keep
+  eval { require WWW::Mechanize::FormFiller::Value::Keep };
+  skip "Need module WWW::Mechanize::FormFiller::Value::Keep to run this test", 1
+    if $@;
+
+
+    # The original POD test
+    {
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+#line 28 lib/WWW/Mechanize/FormFiller/Value/Keep.pm
+
+  use WWW::Mechanize::FormFiller;
+  use WWW::Mechanize::FormFiller::Value::Keep;
+
+  my $f = WWW::Mechanize::FormFiller->new();
+
+  # Leave the login field untouched
+  my $login = WWW::Mechanize::FormFiller::Value::Keep->new( 'login' );
+  $f->add_value( login => $login );
+
+  # Alternatively take the following shorthand, which adds the
+  # field to the list as well :
+  my $sessionid = $f->add_filler( session => 'Keep' );
+
+
+
+
+  require HTML::Form;
+  my $form = HTML::Form->parse('<html><body><form method=get action=/>
+  <input type=text name=login value=foo />
+  <input type=hidden name=sessionid value=bar />
+  </form></body></html>','http://www.example.com/');
+  $f->fill_form($form);
+  is( $form->value('login'), "foo", "Login gets set");
+  is( $form->value('sessionid'), "bar", "Password gets set");
+
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+}
 
 };
 SKIP: {

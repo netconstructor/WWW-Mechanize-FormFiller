@@ -1,8 +1,9 @@
 package WWW::Mechanize::FormFiller::Value::Default;
 use base 'WWW::Mechanize::FormFiller::Value';
+use strict;
 
 use vars qw( $VERSION );
-$VERSION = 0.03;
+$VERSION = '0.04';
 
 sub new {
   my ($class,$name,$value) = @_;
@@ -27,7 +28,7 @@ WWW::Mechanize::FormFiller::Value::Default - Fill a fixed value into an empty HT
 
 =head1 SYNOPSIS
 
-=begin example
+=for example begin
 
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Default;
@@ -46,7 +47,24 @@ WWW::Mechanize::FormFiller::Value::Default - Fill a fixed value into an empty HT
   # "If there is no password, put 'secret' there"
   my $password = $f->add_filler( password => Default => "secret" );
 
-=end example
+=for example end
+
+=for example_testing
+  require HTML::Form;
+  my $form = HTML::Form->parse('<html><body><form method=get action=/>
+  <input type=text name=login />
+  <input type=text name=password />
+  </form></body></html>','http://www.example.com/');
+  $f->fill_form($form);
+  is( $form->value('login'), "Corion", "Login gets set");
+  is( $form->value('password'), "secret", "Password gets set");
+  $form = HTML::Form->parse('<html><body><form method=get action=/>
+  <input type=text name=login value=Test />
+  <input type=text name=password value=geheim />
+  </form></body></html>','http://www.example.com/');
+  $f->fill_form($form);
+  is( $form->value('login'), "Test", "Login gets not overwritten");
+  is( $form->value('password'), "geheim", "Password gets not overwritten");
 
 =head1 DESCRIPTION
 

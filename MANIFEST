@@ -10,6 +10,9 @@ lib/WWW/Mechanize/FormFiller/Value/Fixed.pm
 lib/WWW/Mechanize/FormFiller/Value/Interactive.pm
 lib/WWW/Mechanize/FormFiller/Value/Keep.pm
 lib/WWW/Mechanize/FormFiller/Value/Random.pm
+lib/WWW/Mechanize/FormFiller/Value/Random/Word.pm
+lib/WWW/Mechanize/FormFiller/Value/Random/Chars.pm
+lib/WWW/Mechanize/FormFiller/Value/Random/Date.pm
 t/00-FF-Value.t
 t/01-FF-Value-Fixed.t
 t/02-FF-Value-Default.t
@@ -17,6 +20,7 @@ t/03-FF-Value-Callback.t
 t/04-FF-api.t
 t/05-Form-1.t
 t/06-Form-Image-Button.t
+t/07-FF-Value-Random.t
 t/99-pod.t
 t/embedded-WWW-Mechanize-FormFiller-Value-Callback.t
 t/embedded-WWW-Mechanize-FormFiller-Value-Default.t
@@ -24,5 +28,8 @@ t/embedded-WWW-Mechanize-FormFiller-Value-Fixed.t
 t/embedded-WWW-Mechanize-FormFiller-Value-Interactive.t
 t/embedded-WWW-Mechanize-FormFiller-Value-Keep.t
 t/embedded-WWW-Mechanize-FormFiller-Value-Random.t
+t/embedded-WWW-Mechanize-FormFiller-Value-Random-Word.t
+t/embedded-WWW-Mechanize-FormFiller-Value-Random-Chars.t
+t/embedded-WWW-Mechanize-FormFiller-Value-Random-Date.t
 t/embedded-WWW-Mechanize-FormFiller-Value.t
 t/embedded-WWW-Mechanize-FormFiller.t

@@ -1,12 +1,14 @@
 package WWW::Mechanize::FormFiller::Value::Callback;
 use base 'WWW::Mechanize::FormFiller::Value';
+use strict;
 
 use vars qw( $VERSION );
-$VERSION = 0.03;
+$VERSION = '0.04';
 
 sub new {
   my ($class,$name,$coderef) = @_;
   my $self = $class->SUPER::new($name);
+  
   $self->{callback} = $coderef;
 
   $self;
@@ -14,6 +16,7 @@ sub new {
 
 sub value {
   my ($self,$input) = @_;
+  no strict 'refs';
   $self->{callback}->($self,$input);
 };
 
@@ -27,7 +30,7 @@ WWW::Mechanize::FormFiller::Value::Callback - Call Perl code to fill out a HTML 
 
 =head1 SYNOPSIS
 
-=begin example
+=for example begin
 
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Callback;
@@ -38,7 +41,7 @@ WWW::Mechanize::FormFiller::Value::Callback - Call Perl code to fill out a HTML 
   # This will put the current login name into the login field
 
   sub find_login {
-    getlogin();
+    getlogin || getpwuid($<) || "Kilroy";
   };
 
   my $login = WWW::Mechanize::FormFiller::Value::Callback->new( login => \&find_login );
@@ -48,9 +51,21 @@ WWW::Mechanize::FormFiller::Value::Callback - Call Perl code to fill out a HTML 
   # field to the list as well :
 
   # "If there is no password, put a nice number there
-  my $password = $f->add_filler( password => Callback => sub { int rand(100) } );
+  my $password = $f->add_filler( password => Callback => sub { int rand(90) + 10 } );
 
-=end example
+=for example end
+
+=for example_testing
+  require HTML::Form;
+  my $form = HTML::Form->parse('<html><body><form method=get action=/>
+  <input type=text name=login />
+  <input type=text name=password />
+  </form></body></html>','http://www.example.com/');
+  $f->fill_form($form);
+  my $login_str = getlogin || getpwuid($<) || "Kilroy";
+  is( $form->value('login'), $login_str, "Login gets set");
+  cmp_ok( $form->value('password'), '<', 100, "Password gets set");
+  cmp_ok( $form->value('password'), '>', 9, "Password gets set");
 
 =head1 DESCRIPTION
 

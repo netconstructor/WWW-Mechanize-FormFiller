@@ -22,7 +22,7 @@ sub READLINE {}
 sub GETC {}
 sub BINMODE {}
 
-my $Original_File = 'D:lib\WWW\Mechanize\FormFiller\Value\Callback.pm';
+my $Original_File = 'D:lib\WWW\Mechanize\FormFiller\Value\Random\Word.pm';
 
 package main;
 
@@ -38,9 +38,9 @@ SKIP: {
   skip "Need module WWW::Mechanize::FormFiller to run this test", 1
     if $@;
 
-  # Check for module WWW::Mechanize::FormFiller::Value::Callback
-  eval { require WWW::Mechanize::FormFiller::Value::Callback };
-  skip "Need module WWW::Mechanize::FormFiller::Value::Callback to run this test", 1
+  # Check for module WWW::Mechanize::FormFiller::Value::Random::Word
+  eval { require WWW::Mechanize::FormFiller::Value::Random::Word };
+  skip "Need module WWW::Mechanize::FormFiller::Value::Random::Word to run this test", 1
     if $@;
 
 
@@ -51,28 +51,25 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 34 lib/WWW/Mechanize/FormFiller/Value/Callback.pm
+#line 32 lib/WWW/Mechanize/FormFiller/Value/Random/Word.pm
 
   use WWW::Mechanize::FormFiller;
-  use WWW::Mechanize::FormFiller::Value::Callback;
+  use WWW::Mechanize::FormFiller::Value::Random::Word;
 
   my $f = WWW::Mechanize::FormFiller->new();
 
-  # Create a default value for the HTML field "login"
-  # This will put the current login name into the login field
-
-  sub find_login {
-    getlogin || getpwuid($<) || "Kilroy";
-  };
-
-  my $login = WWW::Mechanize::FormFiller::Value::Callback->new( login => \&find_login );
+  # Create a random value for the HTML field "login"
+  my $login = WWW::Mechanize::FormFiller::Value::Random::Word->new( login => size => 1 );
   $f->add_value( login => $login );
 
   # Alternatively take the following shorthand, which adds the
   # field to the list as well :
 
-  # "If there is no password, put a nice number there
-  my $password = $f->add_filler( password => Callback => sub { int rand(90) + 10 } );
+  # If there is no password, put a random one out of the list there
+  my $password = $f->add_filler( password => Random::Word => size => 1 );
+
+  # Spew some bogus text into the comments field
+  my $comments = $f->add_filler( comments => Random::Word => size => 10 );
 
 
 
@@ -81,7 +78,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 34");
+is($@, '', "example from line 32");
 
 };
 SKIP: {
@@ -96,9 +93,9 @@ SKIP: {
   skip "Need module WWW::Mechanize::FormFiller to run this test", 1
     if $@;
 
-  # Check for module WWW::Mechanize::FormFiller::Value::Callback
-  eval { require WWW::Mechanize::FormFiller::Value::Callback };
-  skip "Need module WWW::Mechanize::FormFiller::Value::Callback to run this test", 1
+  # Check for module WWW::Mechanize::FormFiller::Value::Random::Word
+  eval { require WWW::Mechanize::FormFiller::Value::Random::Word };
+  skip "Need module WWW::Mechanize::FormFiller::Value::Random::Word to run this test", 1
     if $@;
 
 
@@ -106,28 +103,25 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 34 lib/WWW/Mechanize/FormFiller/Value/Callback.pm
+#line 32 lib/WWW/Mechanize/FormFiller/Value/Random/Word.pm
 
   use WWW::Mechanize::FormFiller;
-  use WWW::Mechanize::FormFiller::Value::Callback;
+  use WWW::Mechanize::FormFiller::Value::Random::Word;
 
   my $f = WWW::Mechanize::FormFiller->new();
 
-  # Create a default value for the HTML field "login"
-  # This will put the current login name into the login field
-
-  sub find_login {
-    getlogin || getpwuid($<) || "Kilroy";
-  };
-
-  my $login = WWW::Mechanize::FormFiller::Value::Callback->new( login => \&find_login );
+  # Create a random value for the HTML field "login"
+  my $login = WWW::Mechanize::FormFiller::Value::Random::Word->new( login => size => 1 );
   $f->add_value( login => $login );
 
   # Alternatively take the following shorthand, which adds the
   # field to the list as well :
 
-  # "If there is no password, put a nice number there
-  my $password = $f->add_filler( password => Callback => sub { int rand(90) + 10 } );
+  # If there is no password, put a random one out of the list there
+  my $password = $f->add_filler( password => Random::Word => size => 1 );
+
+  # Spew some bogus text into the comments field
+  my $comments = $f->add_filler( comments => Random::Word => size => 10 );
 
 
 
@@ -136,12 +130,14 @@ SKIP: {
   my $form = HTML::Form->parse('<html><body><form method=get action=/>
   <input type=text name=login />
   <input type=text name=password />
+  <input type=text name=comments />
   </form></body></html>','http://www.example.com/');
   $f->fill_form($form);
-  my $login_str = getlogin || getpwuid($<) || "Kilroy";
-  is( $form->value('login'), $login_str, "Login gets set");
-  cmp_ok( $form->value('password'), '<', 100, "Password gets set");
-  cmp_ok( $form->value('password'), '>', 9, "Password gets set");
+  like( $form->value('login'), qr/^(\w+)$/, "Login gets set");
+  like( $form->value('password'), qr/^(\w+)$/, "Password gets set");
+  my @words = split(" ", $form->value('comments'));
+  is( scalar @words, 10, "Comments get set")
+    or diag "Words found : ",$form->value('comments');
 
     undef $main::_STDOUT_;
     undef $main::_STDERR_;

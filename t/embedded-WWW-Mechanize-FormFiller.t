@@ -43,11 +43,6 @@ SKIP: {
   skip "Need module WWW::Mechanize::FormFiller to run this test", 1
     if $@;
 
-  # Check for module strict
-  eval { require strict };
-  skip "Need module strict to run this test", 1
-    if $@;
-
 
     # The original POD test
         undef $main::_STDOUT_;
@@ -56,36 +51,31 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 121 lib/WWW/Mechanize/FormFiller.pm
+#line 145 lib/WWW/Mechanize/FormFiller.pm
 
-  use strict;
   use WWW::Mechanize::FormFiller;
   use HTML::Form;
 
   # Create a form filler that fills out google for my homepage
 
   my $html = "<html><body><form name='f' action='http://www.google.com/search'>
-      <input type='text' name='q'>
-      <input type='submit' name=btnG value='Google Search'>
+      <input type='text' name='q' value='' />
+      <input type='submit' name=btnG value='Google Search' />
       <input type='hidden' name='secretValue' value='0xDEADBEEF' />
     </form></body></html>";
 
-  my $f = WWW::Mechanize::FormFiller->new( q => [Fixed => "Corion Homepage"] );
+  my $f = WWW::Mechanize::FormFiller->new( 
+      values => [
+                 [q => Fixed => "Corion Homepage"],
+  							]);
   my $form = HTML::Form->parse($html,"http://www.google.com/intl/en/");
   $f->fill_form($form);
 
   my $request = $form->click("btnG");
   # Now we have a complete HTTP request, which we can hand off to
   # LWP::UserAgent or (preferrably) WWW::Mechanize
-
+  
   print $request->as_string;
-
-
-
-
-
-
-
 
 
 
@@ -94,7 +84,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 121");
+is($@, '', "example from line 145");
 
 };
 SKIP: {
@@ -109,59 +99,42 @@ SKIP: {
   skip "Need module WWW::Mechanize::FormFiller to run this test", 1
     if $@;
 
-  # Check for module WWW::Mechanize::FormFiller::Value::Interactive
-  eval { require WWW::Mechanize::FormFiller::Value::Interactive };
-  skip "Need module WWW::Mechanize::FormFiller::Value::Interactive to run this test", 1
-    if $@;
-
-  # Check for module strict
-  eval { require strict };
-  skip "Need module strict to run this test", 1
-    if $@;
-
 
     # The original POD test
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 121 lib/WWW/Mechanize/FormFiller.pm
+#line 145 lib/WWW/Mechanize/FormFiller.pm
 
-  use strict;
   use WWW::Mechanize::FormFiller;
   use HTML::Form;
 
   # Create a form filler that fills out google for my homepage
 
   my $html = "<html><body><form name='f' action='http://www.google.com/search'>
-      <input type='text' name='q'>
-      <input type='submit' name=btnG value='Google Search'>
+      <input type='text' name='q' value='' />
+      <input type='submit' name=btnG value='Google Search' />
       <input type='hidden' name='secretValue' value='0xDEADBEEF' />
     </form></body></html>";
 
-  my $f = WWW::Mechanize::FormFiller->new( q => [Fixed => "Corion Homepage"] );
+  my $f = WWW::Mechanize::FormFiller->new( 
+      values => [
+                 [q => Fixed => "Corion Homepage"],
+  							]);
   my $form = HTML::Form->parse($html,"http://www.google.com/intl/en/");
   $f->fill_form($form);
 
   my $request = $form->click("btnG");
   # Now we have a complete HTTP request, which we can hand off to
   # LWP::UserAgent or (preferrably) WWW::Mechanize
-
+  
   print $request->as_string;
 
 
 
 
-
-
-
-
-
-
-
-  no warnings 'once';
-  require HTML::Form;
-  require WWW::Mechanize::FormFiller::Value::Interactive;
-  *WWW::Mechanize::FormFiller::Value::Interactive::ask_value = sub { "s3[r3t" }; #<-- not a good password
+  $_STDOUT_ =~ s/[\x0a\x0d]+$//;
+  is($_STDOUT_,"GET http://www.google.com/search?q=Corion+Homepage&btnG=Google+Search&secretValue=0xDEADBEEF",'Got the expected HTTP query string');
 
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
@@ -178,7 +151,17 @@ SKIP: {
 };
 SKIP: {
     # A header testing whether we find all prerequisites :
-    
+      # Check for module HTML::Form
+  eval { require HTML::Form };
+  skip "Need module HTML::Form to run this test", 1
+    if $@;
+
+  # Check for module WWW::Mechanize::FormFiller::Value::Interactive
+  eval { require WWW::Mechanize::FormFiller::Value::Interactive };
+  skip "Need module WWW::Mechanize::FormFiller::Value::Interactive to run this test", 1
+    if $@;
+
+
     # The original POD test
         undef $main::_STDOUT_;
     undef $main::_STDERR_;
@@ -186,7 +169,13 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 160 lib/WWW/Mechanize/FormFiller.pm
+#line 180 lib/WWW/Mechanize/FormFiller.pm
+  no warnings 'once';
+  require HTML::Form;
+  require WWW::Mechanize::FormFiller::Value::Interactive;
+  local *WWW::Mechanize::FormFiller::Value::Interactive::ask_value = sub { "s3[r3t" }; #<-- not a good password
+
+
 
   # Create a form filler that asks us for the password
 
@@ -217,17 +206,33 @@ eval q{
 
   }
 };
-is($@, '', "example from line 160");
+is($@, '', "example from line 180");
 
 };
 SKIP: {
     # A header testing whether we find all prerequisites :
-    
+      # Check for module HTML::Form
+  eval { require HTML::Form };
+  skip "Need module HTML::Form to run this test", 1
+    if $@;
+
+  # Check for module WWW::Mechanize::FormFiller::Value::Interactive
+  eval { require WWW::Mechanize::FormFiller::Value::Interactive };
+  skip "Need module WWW::Mechanize::FormFiller::Value::Interactive to run this test", 1
+    if $@;
+
+
     # The original POD test
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 160 lib/WWW/Mechanize/FormFiller.pm
+#line 180 lib/WWW/Mechanize/FormFiller.pm
+  no warnings 'once';
+  require HTML::Form;
+  require WWW::Mechanize::FormFiller::Value::Interactive;
+  local *WWW::Mechanize::FormFiller::Value::Interactive::ask_value = sub { "s3[r3t" }; #<-- not a good password
+
+
 
   # Create a form filler that asks us for the password
 
@@ -281,7 +286,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 215 lib/WWW/Mechanize/FormFiller.pm
+#line 241 lib/WWW/Mechanize/FormFiller.pm
 
   # This filler fills all unspecified fields
   # with the string "<purposedly left blank>"
@@ -292,8 +297,8 @@ eval q{
   # and asks for a password
   my $f = WWW::Mechanize::FormFiller->new(
                        values => [[ login => Fixed => "corion" ],
-                                  [ password => Interactive => [],
-                                 ]]);
+                                  [ password => Interactive => []],
+                                 ]);
 
   # This filler only fills in a username
   # if it is the empty string, and still asks for the password :
@@ -306,7 +311,230 @@ eval q{
 
   }
 };
-is($@, '', "example from line 215");
+is($@, '', "example from line 241");
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+        undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+        undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+eval q{
+  my $example = sub {
+    local $^W = 0;
+
+#line 291 lib/WWW/Mechanize/FormFiller.pm
+
+  $filler = WWW::Mechanize::FormFiller->new();
+  $filler->fillout(
+    # For the the simple case, assumed 'Fixed' class,
+    name => 'Mark',
+
+    # With an array reference, create and fill with the right kind of object.
+    widget_id => [ 'Random', (1..5) ],
+  );
+
+
+
+
+;
+
+  }
+};
+is($@, '', "example from line 291");
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+    {
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+#line 291 lib/WWW/Mechanize/FormFiller.pm
+
+  $filler = WWW::Mechanize::FormFiller->new();
+  $filler->fillout(
+    # For the the simple case, assumed 'Fixed' class,
+    name => 'Mark',
+
+    # With an array reference, create and fill with the right kind of object.
+    widget_id => [ 'Random', (1..5) ],
+  );
+
+
+
+
+  isa_ok($filler,"WWW::Mechanize::FormFiller");  
+
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+}
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+        undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+        undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+eval q{
+  my $example = sub {
+    local $^W = 0;
+
+#line 307 lib/WWW/Mechanize/FormFiller.pm
+  $form = HTML::Form->parse('<html><body><form>
+    <input name="name" type="text" />
+    <input name="motto" type="text" />
+  </form></body></html>','http://www.example.com/');
+
+
+
+  $filler = WWW::Mechanize::FormFiller->new();
+  $filler->fillout(
+    # If the first parameter isa HTML::Form, it is 
+    # filled out directly
+    $form,
+    name => 'Mark',
+    motto => [ 'Random::Word', size => 5 ],
+  );
+  
+
+
+
+;
+
+  }
+};
+is($@, '', "example from line 307");
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+    {
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+#line 307 lib/WWW/Mechanize/FormFiller.pm
+  $form = HTML::Form->parse('<html><body><form>
+    <input name="name" type="text" />
+    <input name="motto" type="text" />
+  </form></body></html>','http://www.example.com/');
+
+
+
+  $filler = WWW::Mechanize::FormFiller->new();
+  $filler->fillout(
+    # If the first parameter isa HTML::Form, it is 
+    # filled out directly
+    $form,
+    name => 'Mark',
+    motto => [ 'Random::Word', size => 5 ],
+  );
+  
+
+
+
+  isa_ok($filler,"WWW::Mechanize::FormFiller");
+  is($form->value('name'),'Mark','Name is set');
+  like($form->value('motto'),qr/^\w+( \w+){3} \w+$/,'Motto is set');
+
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+}
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+        undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+        undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+eval q{
+  my $example = sub {
+    local $^W = 0;
+
+#line 331 lib/WWW/Mechanize/FormFiller.pm
+  $form2 = HTML::Form->parse('<html><body><form>
+    <input name="name" type="text" />
+    <input name="motto" type="text" />','http://www.example.com/');
+
+
+
+  # This works as a direct constructor as well
+  WWW::Mechanize::FormFiller->fillout(
+    $form2,  
+    name => 'Mark',
+    motto => [ 'Random::Word', size => 5 ],
+  );
+
+
+
+
+;
+
+  }
+};
+is($@, '', "example from line 331");
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+    {
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+#line 331 lib/WWW/Mechanize/FormFiller.pm
+  $form2 = HTML::Form->parse('<html><body><form>
+    <input name="name" type="text" />
+    <input name="motto" type="text" />','http://www.example.com/');
+
+
+
+  # This works as a direct constructor as well
+  WWW::Mechanize::FormFiller->fillout(
+    $form2,  
+    name => 'Mark',
+    motto => [ 'Random::Word', size => 5 ],
+  );
+
+
+
+
+  isa_ok($filler,"WWW::Mechanize::FormFiller");
+  is($form2->value('name'),'Mark','Name is set');
+  like($form2->value('motto'),qr/^\w+( \w+){3} \w+$/,'Motto is set');
+
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+}
 
 };
 SKIP: {

@@ -1,8 +1,9 @@
 package WWW::Mechanize::FormFiller::Value::Keep;
 use base 'WWW::Mechanize::FormFiller::Value';
+use strict;
 
 use vars qw( $VERSION );
-$VERSION = 0.03;
+$VERSION = '0.04';
 
 sub new {
   my ($class,$name,$value) = @_;
@@ -23,7 +24,7 @@ WWW::Mechanize::FormFiller::Value::Keep - Leave an HTML field alone
 
 =head1 SYNOPSIS
 
-=begin example
+=for example begin
 
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Keep;
@@ -31,14 +32,24 @@ WWW::Mechanize::FormFiller::Value::Keep - Leave an HTML field alone
   my $f = WWW::Mechanize::FormFiller->new();
 
   # Leave the login field untouched
-  my $login = WWW::Mechanize::FormFiller::Value::Keep->new( login );
+  my $login = WWW::Mechanize::FormFiller::Value::Keep->new( 'login' );
   $f->add_value( login => $login );
 
   # Alternatively take the following shorthand, which adds the
   # field to the list as well :
-  my $sessionid = $f->add_filler( session => Keep );
+  my $sessionid = $f->add_filler( session => 'Keep' );
 
-=end example
+=for example end
+
+=for example_testing
+  require HTML::Form;
+  my $form = HTML::Form->parse('<html><body><form method=get action=/>
+  <input type=text name=login value=foo />
+  <input type=hidden name=sessionid value=bar />
+  </form></body></html>','http://www.example.com/');
+  $f->fill_form($form);
+  is( $form->value('login'), "foo", "Login gets set");
+  is( $form->value('sessionid'), "bar", "Password gets set");
 
 =head1 DESCRIPTION
 

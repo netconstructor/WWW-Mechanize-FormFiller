@@ -1,8 +1,9 @@
 package WWW::Mechanize::FormFiller::Value::Fixed;
 use base 'WWW::Mechanize::FormFiller::Value';
+use strict;
 
 use vars qw( $VERSION );
-$VERSION = 0.03;
+$VERSION = '0.04';
 
 sub new {
   my ($class,$name,$value) = @_;
@@ -23,7 +24,7 @@ WWW::Mechanize::FormFiller::Value::Fixed - Fill a fixed value into an HTML form 
 
 =head1 SYNOPSIS
 
-=begin example
+=for example begin
 
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Fixed;
@@ -38,7 +39,17 @@ WWW::Mechanize::FormFiller::Value::Fixed - Fill a fixed value into an HTML form 
   # field to the list as well :
   my $password = $f->add_filler( password => Fixed => "secret" );
 
-=end example
+=for example end
+
+=for example_testing
+  require HTML::Form;
+  my $form = HTML::Form->parse('<html><body><form method=get action=/>
+  <input type=text name=login value=foo />
+  <input type=text name=password value=bar />
+  </form></body></html>','http://www.example.com/');
+  $f->fill_form($form);
+  is( $form->value('login'), "Corion", "Login gets set");
+  is( $form->value('password'), "secret", "Password gets set");
 
 =head1 DESCRIPTION
 

@@ -1,29 +1,21 @@
-package WWW::Mechanize::FormFiller::Value::Random;
-use strict;
+package WWW::Mechanize::FormFiller::Value::Random::Word;
 use base 'WWW::Mechanize::FormFiller::Value';
-use Data::Random qw(rand_enum);
 
 use vars qw( $VERSION );
+use Data::Random qw(rand_words);
 $VERSION = '0.04';
 
 sub new {
-  my ($class,$name,@values) = @_;
+  my ($class,$name,@args) = @_;
   my $self = $class->SUPER::new($name);
-  $self->{values} = [ @values ];
-
+  @args = (size => 1) unless scalar @args;
+  $self->{args} = [ @args ];
   $self;
 };
 
 sub value {
   my ($self,$input) = @_;
-  my @values;
-  @values = @{$self->{values}}
-    if ($self->{values});
-
-  # Pick a choice among the allowed values for this input
-  # unless we got some prespecified values
-  @values = $input->possible_values unless scalar @values;
-  rand_enum( set => \@values, size => 1 );
+  return join " ", @{rand_words( @{$self->{args}} )};
 };
 
 1;
@@ -32,27 +24,29 @@ __END__
 
 =head1 NAME
 
-WWW::Mechanize::FormFiller::Value::Random - Randomly fill out a HTML form field
+WWW::Mechanize::FormFiller::Value::Random::Word - Fill a word into an HTML form field
 
 =head1 SYNOPSIS
 
 =for example begin
 
   use WWW::Mechanize::FormFiller;
-  use WWW::Mechanize::FormFiller::Value::Random;
+  use WWW::Mechanize::FormFiller::Value::Random::Word;
 
   my $f = WWW::Mechanize::FormFiller->new();
 
   # Create a random value for the HTML field "login"
-
-  my $login = WWW::Mechanize::FormFiller::Value::Random->new( login => "root","administrator","corion" );
+  my $login = WWW::Mechanize::FormFiller::Value::Random::Word->new( login => size => 1 );
   $f->add_value( login => $login );
 
   # Alternatively take the following shorthand, which adds the
   # field to the list as well :
 
   # If there is no password, put a random one out of the list there
-  my $password = $f->add_filler( password => Random => "foo","bar","baz" );
+  my $password = $f->add_filler( password => Random::Word => size => 1 );
+
+  # Spew some bogus text into the comments field
+  my $comments = $f->add_filler( comments => Random::Word => size => 10 );
 
 =for example end
 
@@ -61,10 +55,14 @@ WWW::Mechanize::FormFiller::Value::Random - Randomly fill out a HTML form field
   my $form = HTML::Form->parse('<html><body><form method=get action=/>
   <input type=text name=login />
   <input type=text name=password />
+  <input type=text name=comments />
   </form></body></html>','http://www.example.com/');
   $f->fill_form($form);
-  like( $form->value('login'), qr/^(root|administrator|corion)$/, "Login gets set");
-  like( $form->value('password'), qr/^(foo|bar|baz)$/, "Password gets set");
+  like( $form->value('login'), qr/^(\w+)$/, "Login gets set");
+  like( $form->value('password'), qr/^(\w+)$/, "Password gets set");
+  my @words = split(" ", $form->value('comments'));
+  is( scalar @words, 10, "Comments get set")
+    or diag "Words found : ",$form->value('comments');
 
 =head1 DESCRIPTION
 
@@ -75,9 +73,8 @@ This class provides a way to write a randomly chosen value into a HTML field.
 =item new NAME, LIST
 
 Creates a new value which will correspond to the HTML field C<NAME>. The C<LIST>
-is a list of items one of which will be returned for each call to C<value()>.
-There is no persistence of these values. For items that can only take a finite
-set of elements, a random element out of that list is taken by default.
+is the list of arguments passed to Data::Random::rand_words. If the list is
+empty, C<< size => 1 >> is assumed.
 
 =item name [NEWNAME]
 
@@ -107,5 +104,6 @@ Please contact me if you find bugs or otherwise improve the module. More tests a
 
 =head1 SEE ALSO
 
+L<Data::Random>,
 L<WWW::Mechanize>,L<WWW::Mechanize::Shell>,L<WWW::Mechanize::FormFiller>,L<WWW::Mechanize::FormFiller::Value::Value>,
 L<WWW::Mechanize::FormFiller::Value::Default>,L<WWW::Mechanize::FormFiller::Value::Fixed>,L<WWW::Mechanize::FormFiller::Value::Interactive>
