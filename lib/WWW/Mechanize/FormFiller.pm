@@ -4,7 +4,7 @@ use Carp;
 
 use vars qw( $VERSION @ISA );
 
-$VERSION = 0.02;
+$VERSION = 0.03;
 @ISA = ();
 
 sub load_value_class {
@@ -117,12 +117,11 @@ WWW::Mechanize::FormFiller - framework to automate HTML forms
 
 =head1 SYNOPSIS
 
-=for example_testing
-  require HTML::Form;
+=begin example
 
-=for example begin
   use strict;
   use WWW::Mechanize::FormFiller;
+  use HTML::Form;
 
   # Create a form filler that fills out google for my homepage
 
@@ -142,7 +141,7 @@ WWW::Mechanize::FormFiller - framework to automate HTML forms
 
   print $request->as_string;
 
-=for example end
+=end example
 
 =for example_testing
   $_STDOUT_ =~ s/[\x0a\x0d]+$//;
@@ -157,7 +156,7 @@ editing are also already provided :
   require WWW::Mechanize::FormFiller::Value::Interactive;
   *WWW::Mechanize::FormFiller::Value::Interactive::ask_value = sub { "s3[r3t" }; #<-- not a good password
 
-=for example begin
+=begin example
 
   # Create a form filler that asks us for the password
 
@@ -181,7 +180,7 @@ editing are also already provided :
   # LWP::UserAgent or (preferrably) WWW::Mechanize
   print $request->as_string;
 
-=for example end
+=end example
 
 =for example_testing
   isa_ok($f,"WWW::Mechanize::FormFiller");
@@ -259,7 +258,23 @@ of type HTML::Forms or respond to the same interface.
 
 =head2 Value subclasses
 
-=head2 TODO
+The following WWW::Mechanize::FormFiller::Value subclasses are currently distributed :
+
+=over 4
+
+=item L<WWW::Mechanize::FormFiller::Value::Callback>
+
+=item L<WWW::Mechanize::FormFiller::Value::Default>
+
+=item L<WWW::Mechanize::FormFiller::Value::Fixed>
+
+=item L<WWW::Mechanize::FormFiller::Value::Interactive>
+
+=item L<WWW::Mechanize::FormFiller::Value::Keep>
+
+=item L<WWW::Mechanize::FormFiller::Value::Random>
+
+=back
 
 =head2 EXPORT
 
@@ -279,4 +294,4 @@ Please contact me if you find bugs or otherwise improve the module. More tests a
 
 =head1 SEE ALSO
 
-L<WWW::Mechanize>,L<WWW::Mechanize::Shell>
+L<WWW::Mechanize>,L<WWW::Mechanize::Shell>,L<WWW::Mechanize::FormFiller::Value>

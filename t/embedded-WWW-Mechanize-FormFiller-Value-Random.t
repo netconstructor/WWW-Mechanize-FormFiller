@@ -52,6 +52,7 @@ eval q{
     local $^W = 0;
 
 #line 39 lib/WWW/Mechanize/FormFiller/Value/Random.pm
+
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Random;
 

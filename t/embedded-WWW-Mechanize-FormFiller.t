@@ -33,7 +33,12 @@ tie *STDERR, 'Catch', '_STDERR_' or die $!;
 
 SKIP: {
     # A header testing whether we find all prerequisites :
-      # Check for module WWW::Mechanize::FormFiller
+      # Check for module HTML::Form
+  eval { require HTML::Form };
+  skip "Need module HTML::Form to run this test", 1
+    if $@;
+
+  # Check for module WWW::Mechanize::FormFiller
   eval { require WWW::Mechanize::FormFiller };
   skip "Need module WWW::Mechanize::FormFiller to run this test", 1
     if $@;
@@ -51,9 +56,11 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 124 lib/WWW/Mechanize/FormFiller.pm
+#line 121 lib/WWW/Mechanize/FormFiller.pm
+
   use strict;
   use WWW::Mechanize::FormFiller;
+  use HTML::Form;
 
   # Create a form filler that fills out google for my homepage
 
@@ -87,7 +94,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 124");
+is($@, '', "example from line 121");
 
 };
 SKIP: {
@@ -117,9 +124,11 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 124 lib/WWW/Mechanize/FormFiller.pm
+#line 121 lib/WWW/Mechanize/FormFiller.pm
+
   use strict;
   use WWW::Mechanize::FormFiller;
+  use HTML::Form;
 
   # Create a form filler that fills out google for my homepage
 
@@ -177,7 +186,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 161 lib/WWW/Mechanize/FormFiller.pm
+#line 160 lib/WWW/Mechanize/FormFiller.pm
 
   # Create a form filler that asks us for the password
 
@@ -208,7 +217,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 161");
+is($@, '', "example from line 160");
 
 };
 SKIP: {
@@ -218,7 +227,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 161 lib/WWW/Mechanize/FormFiller.pm
+#line 160 lib/WWW/Mechanize/FormFiller.pm
 
   # Create a form filler that asks us for the password
 
@@ -272,7 +281,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 216 lib/WWW/Mechanize/FormFiller.pm
+#line 215 lib/WWW/Mechanize/FormFiller.pm
 
   # This filler fills all unspecified fields
   # with the string "<purposedly left blank>"
@@ -297,7 +306,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 216");
+is($@, '', "example from line 215");
 
 };
 SKIP: {

@@ -2,7 +2,7 @@ package WWW::Mechanize::FormFiller::Value::Interactive;
 use base 'WWW::Mechanize::FormFiller::Value::Callback';
 
 use vars qw( $VERSION );
-$VERSION = 0.02;
+$VERSION = 0.03;
 
 sub new {
   my ($class,$name) = @_;
@@ -31,7 +31,8 @@ WWW::Mechanize::FormFiller::Value::Interactive - Ask the user to fill out a HTML
 
 =head1 SYNOPSIS
 
-=for example begin
+=begin example
+
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Interactive;
 
@@ -47,7 +48,7 @@ WWW::Mechanize::FormFiller::Value::Interactive - Ask the user to fill out a HTML
   # "Ask the user for the password"
   my $password = $f->add_filler( password => Interactive );
 
-=for example end
+=end example
 
 =head1 DESCRIPTION
 

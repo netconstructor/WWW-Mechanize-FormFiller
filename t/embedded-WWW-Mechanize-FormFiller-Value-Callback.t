@@ -52,6 +52,7 @@ eval q{
     local $^W = 0;
 
 #line 31 lib/WWW/Mechanize/FormFiller/Value/Callback.pm
+
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Callback;
 

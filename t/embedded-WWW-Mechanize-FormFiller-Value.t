@@ -42,6 +42,7 @@ eval q{
     local $^W = 0;
 
 #line 34 lib/WWW/Mechanize/FormFiller/Value.pm
+
   # This class is not used directly
 
 ;

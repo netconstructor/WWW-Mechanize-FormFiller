@@ -1,7 +1,7 @@
 package WWW::Mechanize::FormFiller::Value;
 
 use vars qw( $VERSION @ISA );
-$VERSION = 0.02;
+$VERSION = 0.03;
 @ISA = ();
 
 sub new {
@@ -30,10 +30,11 @@ WWW::Mechanize::FormFiller::Value - Base class for HTML form values
 
 =head1 SYNOPSIS
 
-=for example begin
+=begin example
+
   # This class is not used directly
 
-=for example end
+=end example
 
 =head1 DESCRIPTION
 

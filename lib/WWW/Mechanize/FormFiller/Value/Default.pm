@@ -2,7 +2,7 @@ package WWW::Mechanize::FormFiller::Value::Default;
 use base 'WWW::Mechanize::FormFiller::Value';
 
 use vars qw( $VERSION );
-$VERSION = 0.02;
+$VERSION = 0.03;
 
 sub new {
   my ($class,$name,$value) = @_;
@@ -27,7 +27,7 @@ WWW::Mechanize::FormFiller::Value::Default - Fill a fixed value into an empty HT
 
 =head1 SYNOPSIS
 
-=for example begin
+=begin example
 
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Default;
@@ -46,7 +46,7 @@ WWW::Mechanize::FormFiller::Value::Default - Fill a fixed value into an empty HT
   # "If there is no password, put 'secret' there"
   my $password = $f->add_filler( password => Default => "secret" );
 
-=for example end
+=end example
 
 =head1 DESCRIPTION
 

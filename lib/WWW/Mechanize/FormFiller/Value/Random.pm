@@ -2,7 +2,7 @@ package WWW::Mechanize::FormFiller::Value::Random;
 use base 'WWW::Mechanize::FormFiller::Value';
 
 use vars qw( $VERSION );
-$VERSION = 0.02;
+$VERSION = 0.03;
 
 sub new {
   my ($class,$name,@values) = @_;
@@ -35,7 +35,8 @@ WWW::Mechanize::FormFiller::Value::Random - Randomly fill out a HTML form field
 
 =head1 SYNOPSIS
 
-=for example begin
+=begin example
+
   use WWW::Mechanize::FormFiller;
   use WWW::Mechanize::FormFiller::Value::Random;
 
@@ -52,7 +53,7 @@ WWW::Mechanize::FormFiller::Value::Random - Randomly fill out a HTML form field
   # If there is no password, put a random one out of the list there
   my $password = $f->add_filler( password => Random => "foo","bar","baz" );
 
-=for example end
+=end example
 
 =head1 DESCRIPTION
 
