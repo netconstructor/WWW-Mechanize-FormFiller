@@ -1,0 +1,10 @@
+Revision history for Perl extension WWW::Mechanize::FormFiller.
+
+0.02  20030217
+  - More tests
+  - Inline tests
+  - first release on CPAN in preparation of WWW::Mechanize::Shell
+
+0.01  Thu Nov  7 23:04:33 2002
+  - original version; created by h2xs 1.21 with options
+    -X WWW::Mechanize::FormFiller
