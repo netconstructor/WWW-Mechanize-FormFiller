@@ -1,5 +1,11 @@
 Revision history for Perl extension WWW::Mechanize::FormFiller.
 
+0.05
+  - Documentation fixed for Chars.pm (Thanks to Mark Stosberg)
+  - Now it is possible to also use regular expressions instead
+    of names to specify the fields.
+  - Added documentation and inline test for the above feature
+
 0.04  20030517
   - Fixed Makefile.PL for Perl 5.8.0
   - Fixed inline tests

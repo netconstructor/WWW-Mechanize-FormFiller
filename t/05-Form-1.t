@@ -24,12 +24,17 @@ BEGIN{
   ['Default',"checkbox_1",["on"],3,"on"],
   ['Default',"checkbox_2",[""],4,undef], # ??? This is a bit weird, but that's OK at the moment
   ['Default',"checkbox_2",["on"],4,"on"],
+
+  # REs
+  ['Fixed',qr/text_input/,["bar"],0,"bar"],
+  ['Fixed',qr/text_input/,["bar"],1,"bar"],
 );
 };
 
 use Test::More tests => 1 + scalar @tests * 3;
-
-use_ok("WWW::Mechanize::FormFiller");
+BEGIN {
+  use_ok("WWW::Mechanize::FormFiller");
+};
 SKIP: {
   eval { require HTML::Form };
   skip "Need HTML::Form to run the more extensive tests", scalar @tests * 3 if $@;
@@ -50,8 +55,15 @@ SKIP: {
     my $filler = $f->add_filler($name,$class,@$args);
     isa_ok($filler, "WWW::Mechanize::FormFiller::Value::$class");
     $f->fill_form($form);
-    my $filled_input = $form->find_input($name);
-    is($filled_input->value,$expected,"Modified the expected field for page $index/$name ($class:".join(":",@$args).")");
+    my @filled_inputs;
+    if (ref $name and UNIVERSAL::isa( $name,'Regexp')) {
+	    @filled_inputs = grep { $_->name =~ $name } $form->inputs;
+    } else {
+      @filled_inputs = $form->find_input($name);
+    };
+    for my $input (@filled_inputs) {
+      is($input->value,$expected,"Modified the expected field for page $index/$name ($class:".join(":",@$args).")");
+    };
   };
 };
 
@@ -60,6 +72,7 @@ __DATA__
 <body>
 <form>
   <input type="text" name="text_input_1" value="">
+  <input type="text" name="secondary" value="">
 </form>
 </body>
 </html>

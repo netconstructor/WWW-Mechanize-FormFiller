@@ -51,7 +51,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 145 lib/WWW/Mechanize/FormFiller.pm
+#line 163 lib/WWW/Mechanize/FormFiller.pm
 
   use WWW::Mechanize::FormFiller;
   use HTML::Form;
@@ -64,7 +64,7 @@ eval q{
       <input type='hidden' name='secretValue' value='0xDEADBEEF' />
     </form></body></html>";
 
-  my $f = WWW::Mechanize::FormFiller->new( 
+  my $f = WWW::Mechanize::FormFiller->new(
       values => [
                  [q => Fixed => "Corion Homepage"],
   							]);
@@ -74,7 +74,7 @@ eval q{
   my $request = $form->click("btnG");
   # Now we have a complete HTTP request, which we can hand off to
   # LWP::UserAgent or (preferrably) WWW::Mechanize
-  
+
   print $request->as_string;
 
 
@@ -84,7 +84,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 145");
+is($@, '', "example from line 163");
 
 };
 SKIP: {
@@ -104,7 +104,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 145 lib/WWW/Mechanize/FormFiller.pm
+#line 163 lib/WWW/Mechanize/FormFiller.pm
 
   use WWW::Mechanize::FormFiller;
   use HTML::Form;
@@ -117,7 +117,7 @@ SKIP: {
       <input type='hidden' name='secretValue' value='0xDEADBEEF' />
     </form></body></html>";
 
-  my $f = WWW::Mechanize::FormFiller->new( 
+  my $f = WWW::Mechanize::FormFiller->new(
       values => [
                  [q => Fixed => "Corion Homepage"],
   							]);
@@ -127,7 +127,7 @@ SKIP: {
   my $request = $form->click("btnG");
   # Now we have a complete HTTP request, which we can hand off to
   # LWP::UserAgent or (preferrably) WWW::Mechanize
-  
+
   print $request->as_string;
 
 
@@ -135,6 +135,136 @@ SKIP: {
 
   $_STDOUT_ =~ s/[\x0a\x0d]+$//;
   is($_STDOUT_,"GET http://www.google.com/search?q=Corion+Homepage&btnG=Google+Search&secretValue=0xDEADBEEF",'Got the expected HTTP query string');
+
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+}
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+    
+    # The original POD test
+        undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+      # Check for module HTML::Form
+  eval { require HTML::Form };
+  skip "Need module HTML::Form to run this test", 1
+    if $@;
+
+  # Check for module WWW::Mechanize::FormFiller
+  eval { require WWW::Mechanize::FormFiller };
+  skip "Need module WWW::Mechanize::FormFiller to run this test", 1
+    if $@;
+
+
+    # The original POD test
+        undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+eval q{
+  my $example = sub {
+    local $^W = 0;
+
+#line 199 lib/WWW/Mechanize/FormFiller.pm
+  use WWW::Mechanize::FormFiller;
+  use HTML::Form;
+
+
+
+  my $html = "<html><body><form name='f' action='http://www.example.com/'>
+      <input type='text' name='date_birth_spouse' value='' />
+      <input type='text' name='date_birth' value='' />
+      <input type='text' name='date_birth_kid_1' value='' />
+      <input type='text' name='date_birth_kid_2' value='' />
+      <input type='submit' name='fool'>
+    </form></body></html>";
+
+  my $f = WWW::Mechanize::FormFiller->new(
+      values => [
+                 [date_birth => Fixed => "01.01.1970"],
+                 
+                 # We are less discriminate with the other dates
+                 [qr/date_birth/ => 'Random::Date' => string => '%d.%m.%Y'],
+  							]);
+  my $form = HTML::Form->parse($html,"http://www.example.com");
+  $f->fill_form($form);
+
+  my $request = $form->click("fool");
+  # Now we have a complete HTTP request, which we can hand off to
+  # LWP::UserAgent or (preferrably) WWW::Mechanize
+
+  print $request->as_string;
+
+
+
+
+;
+
+  }
+};
+is($@, '', "example from line 199");
+
+};
+SKIP: {
+    # A header testing whether we find all prerequisites :
+      # Check for module HTML::Form
+  eval { require HTML::Form };
+  skip "Need module HTML::Form to run this test", 1
+    if $@;
+
+  # Check for module WWW::Mechanize::FormFiller
+  eval { require WWW::Mechanize::FormFiller };
+  skip "Need module WWW::Mechanize::FormFiller to run this test", 1
+    if $@;
+
+
+    # The original POD test
+    {
+    undef $main::_STDOUT_;
+    undef $main::_STDERR_;
+#line 199 lib/WWW/Mechanize/FormFiller.pm
+  use WWW::Mechanize::FormFiller;
+  use HTML::Form;
+
+
+
+  my $html = "<html><body><form name='f' action='http://www.example.com/'>
+      <input type='text' name='date_birth_spouse' value='' />
+      <input type='text' name='date_birth' value='' />
+      <input type='text' name='date_birth_kid_1' value='' />
+      <input type='text' name='date_birth_kid_2' value='' />
+      <input type='submit' name='fool'>
+    </form></body></html>";
+
+  my $f = WWW::Mechanize::FormFiller->new(
+      values => [
+                 [date_birth => Fixed => "01.01.1970"],
+                 
+                 # We are less discriminate with the other dates
+                 [qr/date_birth/ => 'Random::Date' => string => '%d.%m.%Y'],
+  							]);
+  my $form = HTML::Form->parse($html,"http://www.example.com");
+  $f->fill_form($form);
+
+  my $request = $form->click("fool");
+  # Now we have a complete HTTP request, which we can hand off to
+  # LWP::UserAgent or (preferrably) WWW::Mechanize
+
+  print $request->as_string;
+
+
+
+
+  $_STDOUT_ =~ s/[\x0a\x0d]+$//;
+  like($_STDOUT_,qr"^GET\shttp://www\.example\.com/
+  	\?date_birth_spouse=\d\d.\d\d.\d\d\d\d
+  	\&date_birth=01.01.1970
+  	\&date_birth_kid_1=\d\d.\d\d.\d\d\d\d
+  	\&date_birth_kid_2=\d\d.\d\d.\d\d\d\d$"x,'Got the expected HTTP query string');
 
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
@@ -169,7 +299,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 180 lib/WWW/Mechanize/FormFiller.pm
+#line 242 lib/WWW/Mechanize/FormFiller.pm
   no warnings 'once';
   require HTML::Form;
   require WWW::Mechanize::FormFiller::Value::Interactive;
@@ -206,7 +336,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 180");
+is($@, '', "example from line 242");
 
 };
 SKIP: {
@@ -226,7 +356,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 180 lib/WWW/Mechanize/FormFiller.pm
+#line 242 lib/WWW/Mechanize/FormFiller.pm
   no warnings 'once';
   require HTML::Form;
   require WWW::Mechanize::FormFiller::Value::Interactive;
@@ -286,7 +416,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 241 lib/WWW/Mechanize/FormFiller.pm
+#line 303 lib/WWW/Mechanize/FormFiller.pm
 
   # This filler fills all unspecified fields
   # with the string "<purposedly left blank>"
@@ -311,7 +441,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 241");
+is($@, '', "example from line 303");
 
 };
 SKIP: {
@@ -332,7 +462,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 291 lib/WWW/Mechanize/FormFiller.pm
+#line 353 lib/WWW/Mechanize/FormFiller.pm
 
   $filler = WWW::Mechanize::FormFiller->new();
   $filler->fillout(
@@ -350,7 +480,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 291");
+is($@, '', "example from line 353");
 
 };
 SKIP: {
@@ -360,7 +490,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 291 lib/WWW/Mechanize/FormFiller.pm
+#line 353 lib/WWW/Mechanize/FormFiller.pm
 
   $filler = WWW::Mechanize::FormFiller->new();
   $filler->fillout(
@@ -374,7 +504,7 @@ SKIP: {
 
 
 
-  isa_ok($filler,"WWW::Mechanize::FormFiller");  
+  isa_ok($filler,"WWW::Mechanize::FormFiller");
 
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
@@ -399,7 +529,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 307 lib/WWW/Mechanize/FormFiller.pm
+#line 369 lib/WWW/Mechanize/FormFiller.pm
   $form = HTML::Form->parse('<html><body><form>
     <input name="name" type="text" />
     <input name="motto" type="text" />
@@ -409,13 +539,13 @@ eval q{
 
   $filler = WWW::Mechanize::FormFiller->new();
   $filler->fillout(
-    # If the first parameter isa HTML::Form, it is 
+    # If the first parameter isa HTML::Form, it is
     # filled out directly
     $form,
     name => 'Mark',
     motto => [ 'Random::Word', size => 5 ],
   );
-  
+
 
 
 
@@ -423,7 +553,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 307");
+is($@, '', "example from line 369");
 
 };
 SKIP: {
@@ -433,7 +563,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 307 lib/WWW/Mechanize/FormFiller.pm
+#line 369 lib/WWW/Mechanize/FormFiller.pm
   $form = HTML::Form->parse('<html><body><form>
     <input name="name" type="text" />
     <input name="motto" type="text" />
@@ -443,13 +573,13 @@ SKIP: {
 
   $filler = WWW::Mechanize::FormFiller->new();
   $filler->fillout(
-    # If the first parameter isa HTML::Form, it is 
+    # If the first parameter isa HTML::Form, it is
     # filled out directly
     $form,
     name => 'Mark',
     motto => [ 'Random::Word', size => 5 ],
   );
-  
+
 
 
 
@@ -480,7 +610,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 331 lib/WWW/Mechanize/FormFiller.pm
+#line 393 lib/WWW/Mechanize/FormFiller.pm
   $form2 = HTML::Form->parse('<html><body><form>
     <input name="name" type="text" />
     <input name="motto" type="text" />','http://www.example.com/');
@@ -489,7 +619,7 @@ eval q{
 
   # This works as a direct constructor as well
   WWW::Mechanize::FormFiller->fillout(
-    $form2,  
+    $form2,
     name => 'Mark',
     motto => [ 'Random::Word', size => 5 ],
   );
@@ -501,7 +631,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 331");
+is($@, '', "example from line 393");
 
 };
 SKIP: {
@@ -511,7 +641,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 331 lib/WWW/Mechanize/FormFiller.pm
+#line 393 lib/WWW/Mechanize/FormFiller.pm
   $form2 = HTML::Form->parse('<html><body><form>
     <input name="name" type="text" />
     <input name="motto" type="text" />','http://www.example.com/');
@@ -520,7 +650,7 @@ SKIP: {
 
   # This works as a direct constructor as well
   WWW::Mechanize::FormFiller->fillout(
-    $form2,  
+    $form2,
     name => 'Mark',
     motto => [ 'Random::Word', size => 5 ],
   );

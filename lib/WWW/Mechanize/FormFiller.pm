@@ -4,7 +4,7 @@ use Carp;
 
 use vars qw( $VERSION @ISA );
 
-$VERSION = '0.04';
+$VERSION = '0.05';
 @ISA = ();
 
 sub load_value_class {
@@ -34,6 +34,7 @@ sub new {
   if (exists $args{default}) {
     my ($class,@args) = @{$args{default}};
     load_value_class($class);
+    no strict 'refs';
     $self->{default} = "WWW::Mechanize::FormFiller::Value::$class"->new(undef, @args);
   };
 
@@ -42,7 +43,7 @@ sub new {
       for my $value (@{$args{values}}) {
         if (ref $value eq 'ARRAY') {
           my ($name,$class,@args) = @$value;
-          if (defined $class and $class) {
+          if ($class) {
             $self->add_filler( $name, $class, @args );
           } else {
             Carp::croak "Each element of the values array must have at least 2 elements (name and class)" unless defined $class;
@@ -73,7 +74,11 @@ sub add_filler {
 
 sub add_value {
   my ($self, $name, $value) = @_;
-  $self->{values}->{$name} = $value;
+  if (ref $name and UNIVERSAL::isa($name,'Regexp')) {
+    $self->{values}->{byre}->{$name} = $value;
+  } else {
+    $self->{values}->{byname}->{$name} = $value;
+  };
   $value;
 };
 
@@ -84,18 +89,31 @@ sub default {
   $result;
 };
 
+sub find_filler {
+  my ($self,$input) = @_;
+  croak "No input given" unless defined $input;
+  my $value;
+  if (exists $self->{values}->{byname}->{$input->name()}) {
+    $value = $self->{values}->{byname}->{$input->name};
+  } elsif (grep { $input->name =~ /$_/ } keys %{$self->{values}->{byre}}) {
+    my $match = (grep { $input->name =~ /$_/ } keys %{$self->{values}->{byre}})[0];
+    $value = $self->{values}->{byre}->{$match};
+  } elsif ($input->type eq "image") {
+    # Image inputs are really buttons, and if they have no (user) specified value,
+    # we don't ask about them.
+  } elsif ($self->default) {
+    $value = $self->default();
+  };
+  $value;
+};
+
 sub fill_form {
   my ($self,$form) = @_;
+  #for (keys %{$self->{values}}) {
+  #  warn $_, " ", ref $_;
+  #};
   for my $input ($form->inputs) {
-    my $value;
-    if (exists $self->{values}->{$input->name()}) {
-      $value = $self->{values}->{$input->name};
-    } elsif ($input->type eq "image") {
-      # Image inputs are really buttons, and if they have no (user) specified value,
-      # we don't ask about them.
-    } elsif ($self->default) {
-      $value = $self->default();
-    };
+    my $value = $self->find_filler($input);
     # We leave all values alone whenever we don't know what to do with them
     if (defined $value) {
       # Hmm - who cares about whether a value was hidden/readonly ??
@@ -112,7 +130,7 @@ sub fillout {
   my $self_class = shift;
   my $self = ref $self_class ? $self_class : $self_class->new();
   my $form;
-  
+
   while (@_) {
     if (ref $_[0] and eval { UNIVERSAL::isa($_[0],'HTML::Form') }) {
       croak "Two HTML::Form objects passed into fillout()" if ($form);
@@ -154,7 +172,7 @@ WWW::Mechanize::FormFiller - framework to automate HTML forms
       <input type='hidden' name='secretValue' value='0xDEADBEEF' />
     </form></body></html>";
 
-  my $f = WWW::Mechanize::FormFiller->new( 
+  my $f = WWW::Mechanize::FormFiller->new(
       values => [
                  [q => Fixed => "Corion Homepage"],
   							]);
@@ -164,7 +182,7 @@ WWW::Mechanize::FormFiller - framework to automate HTML forms
   my $request = $form->click("btnG");
   # Now we have a complete HTTP request, which we can hand off to
   # LWP::UserAgent or (preferrably) WWW::Mechanize
-  
+
   print $request->as_string;
 
 =end example
@@ -172,6 +190,50 @@ WWW::Mechanize::FormFiller - framework to automate HTML forms
 =for example_testing
   $_STDOUT_ =~ s/[\x0a\x0d]+$//;
   is($_STDOUT_,"GET http://www.google.com/search?q=Corion+Homepage&btnG=Google+Search&secretValue=0xDEADBEEF",'Got the expected HTTP query string');
+  
+Form fields can be specified by name or by a regular expression. A
+field specified by name takes precedence over a matching regular
+expression.
+
+=for example
+  use WWW::Mechanize::FormFiller;
+  use HTML::Form;
+
+=begin example
+
+  my $html = "<html><body><form name='f' action='http://www.example.com/'>
+      <input type='text' name='date_birth_spouse' value='' />
+      <input type='text' name='date_birth' value='' />
+      <input type='text' name='date_birth_kid_1' value='' />
+      <input type='text' name='date_birth_kid_2' value='' />
+      <input type='submit' name='fool'>
+    </form></body></html>";
+
+  my $f = WWW::Mechanize::FormFiller->new(
+      values => [
+                 [date_birth => Fixed => "01.01.1970"],
+                 
+                 # We are less discriminate with the other dates
+                 [qr/date_birth/ => 'Random::Date' => string => '%d.%m.%Y'],
+  							]);
+  my $form = HTML::Form->parse($html,"http://www.example.com");
+  $f->fill_form($form);
+
+  my $request = $form->click("fool");
+  # Now we have a complete HTTP request, which we can hand off to
+  # LWP::UserAgent or (preferrably) WWW::Mechanize
+
+  print $request->as_string;
+
+=end example
+
+=for example_testing
+  $_STDOUT_ =~ s/[\x0a\x0d]+$//;
+  like($_STDOUT_,qr"^GET\shttp://www\.example\.com/
+  	\?date_birth_spouse=\d\d.\d\d.\d\d\d\d
+  	\&date_birth=01.01.1970
+  	\&date_birth_kid_1=\d\d.\d\d.\d\d\d\d
+  	\&date_birth_kid_2=\d\d.\d\d.\d\d\d\d$"x,'Got the expected HTTP query string');
 
 You are not limited to fixed form values - callbacks and interactive
 editing are also already provided :
@@ -301,7 +363,7 @@ to the following examples :
 =for example end
 
 =for example_testing
-  isa_ok($filler,"WWW::Mechanize::FormFiller");  
+  isa_ok($filler,"WWW::Mechanize::FormFiller");
 
 =for example
   $form = HTML::Form->parse('<html><body><form>
@@ -313,13 +375,13 @@ to the following examples :
 
   $filler = WWW::Mechanize::FormFiller->new();
   $filler->fillout(
-    # If the first parameter isa HTML::Form, it is 
+    # If the first parameter isa HTML::Form, it is
     # filled out directly
     $form,
     name => 'Mark',
     motto => [ 'Random::Word', size => 5 ],
   );
-  
+
 =for example end
 
 =for example_testing
@@ -336,7 +398,7 @@ to the following examples :
 
   # This works as a direct constructor as well
   WWW::Mechanize::FormFiller->fillout(
-    $form2,  
+    $form2,
     name => 'Mark',
     motto => [ 'Random::Word', size => 5 ],
   );

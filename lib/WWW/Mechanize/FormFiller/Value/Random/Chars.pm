@@ -4,7 +4,7 @@ use strict;
 
 use vars qw( $VERSION );
 use Data::Random qw(rand_chars);
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 sub new {
   my ($class,$name,@args) = @_;
@@ -69,8 +69,8 @@ This class provides a way to write a randomly chosen value into a HTML field.
 =item new NAME, LIST
 
 Creates a new value which will correspond to the HTML field C<NAME>. The C<LIST>
-is the list of arguments passed to Data::Random::rand_words. If the list is
-empty, C<< size => 1 >> is assumed.
+is the list of arguments passed to Data::Random::rand_chars. If the list is
+empty, C<< set => 'alpha', min => 5, max => 8 >> is assumed.
 
 =item name [NEWNAME]
 
