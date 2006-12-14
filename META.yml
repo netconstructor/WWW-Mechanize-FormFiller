@@ -1,0 +1,13 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         WWW-Mechanize-FormFiller
+version:      0.06
+version_from: lib/WWW/Mechanize/FormFiller.pm
+installdirs:  site
+requires:
+    Data::Random:                  0.05
+    HTML::Form:                    
+    Test::More:                    
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.30

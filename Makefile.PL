@@ -30,7 +30,7 @@ BEGIN {
 
 # Autocreate the synopsis test from the pod of every module
 # (if we have Test::Inline)
-{
+if (0) { eval q{
     package MY;
     use strict;
     sub top_targets {
@@ -59,7 +59,7 @@ BEGIN {
 
         return $out;
     }
-}
+}}
 
 # To make Test::Prereq happy
 1;

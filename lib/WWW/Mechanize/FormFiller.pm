@@ -4,7 +4,7 @@ use Carp;
 
 use vars qw( $VERSION @ISA );
 
-$VERSION = '0.05';
+$VERSION = '0.06';
 @ISA = ();
 
 sub load_value_class {
@@ -109,9 +109,6 @@ sub find_filler {
 
 sub fill_form {
   my ($self,$form) = @_;
-  #for (keys %{$self->{values}}) {
-  #  warn $_, " ", ref $_;
-  #};
   for my $input ($form->inputs) {
     my $value = $self->find_filler($input);
     # We leave all values alone whenever we don't know what to do with them
@@ -121,7 +118,8 @@ sub fill_form {
       local $^W = undef;
       my $v = $value->value($input);
       undef $v if ($input->type() eq "checkbox" and $v eq "");
-      $input->value( $v );
+      eval { $input->value( $v ) };
+      $@ and croak "Field '" .$input->name. "' had illegal value: $v";
     };
   };
 };
@@ -190,7 +188,7 @@ WWW::Mechanize::FormFiller - framework to automate HTML forms
 =for example_testing
   $_STDOUT_ =~ s/[\x0a\x0d]+$//;
   is($_STDOUT_,"GET http://www.google.com/search?q=Corion+Homepage&btnG=Google+Search&secretValue=0xDEADBEEF",'Got the expected HTTP query string');
-  
+
 Form fields can be specified by name or by a regular expression. A
 field specified by name takes precedence over a matching regular
 expression.
@@ -212,7 +210,7 @@ expression.
   my $f = WWW::Mechanize::FormFiller->new(
       values => [
                  [date_birth => Fixed => "01.01.1970"],
-                 
+
                  # We are less discriminate with the other dates
                  [qr/date_birth/ => 'Random::Date' => string => '%d.%m.%Y'],
   							]);

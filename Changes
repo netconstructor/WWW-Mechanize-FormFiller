@@ -1,6 +1,11 @@
 Revision history for Perl extension WWW::Mechanize::FormFiller.
 
-0.05
+0.06 20061214
+  - Added patch (plus Test) by Mark Stosberg to make filling in
+    an invalid value to a field die with a more descriptive message
+  - Disabled automatic inline test generation
+
+0.05 ????????
   - Documentation fixed for Chars.pm (Thanks to Mark Stosberg)
   - Now it is possible to also use regular expressions instead
     of names to specify the fields.

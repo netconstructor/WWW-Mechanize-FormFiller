@@ -1,4 +1,4 @@
-#!D:\Programme\indigoperl-5.6\bin\perl.exe -w
+#!/opt/perl58/bin/perl -w
 
 use Test::More 'no_plan';
 
@@ -22,7 +22,7 @@ sub READLINE {}
 sub GETC {}
 sub BINMODE {}
 
-my $Original_File = 'D:lib\WWW\Mechanize\FormFiller.pm';
+my $Original_File = 'lib/WWW/Mechanize/FormFiller.pm';
 
 package main;
 
@@ -51,7 +51,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 163 lib/WWW/Mechanize/FormFiller.pm
+#line 161 lib/WWW/Mechanize/FormFiller.pm
 
   use WWW::Mechanize::FormFiller;
   use HTML::Form;
@@ -84,7 +84,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 163");
+is($@, '', "example from line 161");
 
 };
 SKIP: {
@@ -104,7 +104,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 163 lib/WWW/Mechanize/FormFiller.pm
+#line 161 lib/WWW/Mechanize/FormFiller.pm
 
   use WWW::Mechanize::FormFiller;
   use HTML::Form;
@@ -169,7 +169,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 199 lib/WWW/Mechanize/FormFiller.pm
+#line 197 lib/WWW/Mechanize/FormFiller.pm
   use WWW::Mechanize::FormFiller;
   use HTML::Form;
 
@@ -186,7 +186,7 @@ eval q{
   my $f = WWW::Mechanize::FormFiller->new(
       values => [
                  [date_birth => Fixed => "01.01.1970"],
-                 
+
                  # We are less discriminate with the other dates
                  [qr/date_birth/ => 'Random::Date' => string => '%d.%m.%Y'],
   							]);
@@ -206,7 +206,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 199");
+is($@, '', "example from line 197");
 
 };
 SKIP: {
@@ -226,7 +226,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 199 lib/WWW/Mechanize/FormFiller.pm
+#line 197 lib/WWW/Mechanize/FormFiller.pm
   use WWW::Mechanize::FormFiller;
   use HTML::Form;
 
@@ -243,7 +243,7 @@ SKIP: {
   my $f = WWW::Mechanize::FormFiller->new(
       values => [
                  [date_birth => Fixed => "01.01.1970"],
-                 
+
                  # We are less discriminate with the other dates
                  [qr/date_birth/ => 'Random::Date' => string => '%d.%m.%Y'],
   							]);
@@ -299,7 +299,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 242 lib/WWW/Mechanize/FormFiller.pm
+#line 240 lib/WWW/Mechanize/FormFiller.pm
   no warnings 'once';
   require HTML::Form;
   require WWW::Mechanize::FormFiller::Value::Interactive;
@@ -336,7 +336,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 242");
+is($@, '', "example from line 240");
 
 };
 SKIP: {
@@ -356,7 +356,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 242 lib/WWW/Mechanize/FormFiller.pm
+#line 240 lib/WWW/Mechanize/FormFiller.pm
   no warnings 'once';
   require HTML::Form;
   require WWW::Mechanize::FormFiller::Value::Interactive;
@@ -416,7 +416,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 303 lib/WWW/Mechanize/FormFiller.pm
+#line 301 lib/WWW/Mechanize/FormFiller.pm
 
   # This filler fills all unspecified fields
   # with the string "<purposedly left blank>"
@@ -441,7 +441,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 303");
+is($@, '', "example from line 301");
 
 };
 SKIP: {
@@ -462,7 +462,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 353 lib/WWW/Mechanize/FormFiller.pm
+#line 351 lib/WWW/Mechanize/FormFiller.pm
 
   $filler = WWW::Mechanize::FormFiller->new();
   $filler->fillout(
@@ -480,7 +480,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 353");
+is($@, '', "example from line 351");
 
 };
 SKIP: {
@@ -490,7 +490,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 353 lib/WWW/Mechanize/FormFiller.pm
+#line 351 lib/WWW/Mechanize/FormFiller.pm
 
   $filler = WWW::Mechanize::FormFiller->new();
   $filler->fillout(
@@ -529,7 +529,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 369 lib/WWW/Mechanize/FormFiller.pm
+#line 367 lib/WWW/Mechanize/FormFiller.pm
   $form = HTML::Form->parse('<html><body><form>
     <input name="name" type="text" />
     <input name="motto" type="text" />
@@ -553,7 +553,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 369");
+is($@, '', "example from line 367");
 
 };
 SKIP: {
@@ -563,7 +563,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 369 lib/WWW/Mechanize/FormFiller.pm
+#line 367 lib/WWW/Mechanize/FormFiller.pm
   $form = HTML::Form->parse('<html><body><form>
     <input name="name" type="text" />
     <input name="motto" type="text" />
@@ -610,7 +610,7 @@ eval q{
   my $example = sub {
     local $^W = 0;
 
-#line 393 lib/WWW/Mechanize/FormFiller.pm
+#line 391 lib/WWW/Mechanize/FormFiller.pm
   $form2 = HTML::Form->parse('<html><body><form>
     <input name="name" type="text" />
     <input name="motto" type="text" />','http://www.example.com/');
@@ -631,7 +631,7 @@ eval q{
 
   }
 };
-is($@, '', "example from line 393");
+is($@, '', "example from line 391");
 
 };
 SKIP: {
@@ -641,7 +641,7 @@ SKIP: {
     {
     undef $main::_STDOUT_;
     undef $main::_STDERR_;
-#line 393 lib/WWW/Mechanize/FormFiller.pm
+#line 391 lib/WWW/Mechanize/FormFiller.pm
   $form2 = HTML::Form->parse('<html><body><form>
     <input name="name" type="text" />
     <input name="motto" type="text" />','http://www.example.com/');

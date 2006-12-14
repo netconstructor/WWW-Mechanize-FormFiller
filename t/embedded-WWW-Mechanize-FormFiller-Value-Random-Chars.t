@@ -1,4 +1,4 @@
-#!D:\Programme\indigoperl-5.6\bin\perl.exe -w
+#!/opt/perl58/bin/perl -w
 
 use Test::More 'no_plan';
 
@@ -22,7 +22,7 @@ sub READLINE {}
 sub GETC {}
 sub BINMODE {}
 
-my $Original_File = 'D:lib\WWW\Mechanize\FormFiller\Value\Random\Chars.pm';
+my $Original_File = 'lib/WWW/Mechanize/FormFiller/Value/Random/Chars.pm';
 
 package main;
 
