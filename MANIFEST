@@ -21,8 +21,11 @@ t/04-FF-api.t
 t/05-Form-1.t
 t/06-Form-Image-Button.t
 t/07-FF-Value-Random.t
-t/08-FF-fillout.t
 t/99-pod.t
+t/99-manifest.t
+t/99-todo.t
+t/99-unix-text.t
+t/99-versions.t
 t/embedded-WWW-Mechanize-FormFiller-Value-Callback.t
 t/embedded-WWW-Mechanize-FormFiller-Value-Default.t
 t/embedded-WWW-Mechanize-FormFiller-Value-Fixed.t

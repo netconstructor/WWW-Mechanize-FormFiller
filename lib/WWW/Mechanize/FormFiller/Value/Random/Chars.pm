@@ -4,7 +4,7 @@ use strict;
 
 use vars qw( $VERSION );
 use Data::Random qw(rand_chars);
-$VERSION = '0.05';
+$VERSION = '0.09';
 
 sub new {
   my ($class,$name,@args) = @_;

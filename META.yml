@@ -1,16 +1,24 @@
 --- #YAML:1.0
-name:                WWW-Mechanize-FormFiller
-version:             0.08
-abstract:            framework to automate HTML forms
-license:             ~
-generated_by:        ExtUtils::MakeMaker version 6.36_01
-distribution_type:   module
-requires:     
-    Data::Random:                  0.05
-    HTML::Form:                    
-    Test::More:                    
-meta-spec:
-    url:     http://module-build.sourceforge.net/META-spec-v1.2.html
-    version: 1.2
+name:               WWW-Mechanize-FormFiller
+version:            0.09
+abstract:           framework to automate HTML forms
 author:
     - Max Maischein <corion@cpan.org>
+license:            unknown
+distribution_type:  module
+configure_requires:
+    ExtUtils::MakeMaker:  0
+build_requires:
+    ExtUtils::MakeMaker:  0
+requires:
+    Data::Random:  0.05
+    HTML::Form:    ~
+    Test::More:    ~
+no_index:
+    directory:
+        - t
+        - inc
+generated_by:       ExtUtils::MakeMaker version 6.50
+meta-spec:
+    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
+    version:  1.4

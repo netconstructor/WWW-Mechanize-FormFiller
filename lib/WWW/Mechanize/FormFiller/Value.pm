@@ -1,7 +1,7 @@
 package WWW::Mechanize::FormFiller::Value;
 
 use vars qw( $VERSION @ISA );
-$VERSION = '0.04';
+$VERSION = '0.09';
 @ISA = ();
 
 sub new {

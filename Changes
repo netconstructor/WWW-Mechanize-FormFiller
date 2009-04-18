@@ -1,5 +1,10 @@
 Revision history for Perl extension WWW::Mechanize::FormFiller.
 
+0.09 20090418
+  . Test fix, no need to update
+  - Finally remove t/08*, which checked for HTML::Form behaviour which changed
+  - Update author test suite
+
 0.08 20071009
   - Rerelease because the old one went missing
   - No need to upgrade
