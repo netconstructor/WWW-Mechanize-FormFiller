@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               WWW-Mechanize-FormFiller
-version:            0.09
+version:            0.10
 abstract:           framework to automate HTML forms
 author:
     - Max Maischein <corion@cpan.org>

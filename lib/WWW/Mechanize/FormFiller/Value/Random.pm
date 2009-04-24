@@ -4,7 +4,7 @@ use base 'WWW::Mechanize::FormFiller::Value';
 use Data::Random qw(rand_enum);
 
 use vars qw( $VERSION );
-$VERSION = '0.09';
+$VERSION = '0.10';
 
 sub new {
   my ($class,$name,@values) = @_;
@@ -107,5 +107,5 @@ Please contact me if you find bugs or otherwise improve the module. More tests a
 
 =head1 SEE ALSO
 
-L<WWW::Mechanize>,L<WWW::Mechanize::Shell>,L<WWW::Mechanize::FormFiller>,L<WWW::Mechanize::FormFiller::Value::Value>,
-L<WWW::Mechanize::FormFiller::Value::Default>,L<WWW::Mechanize::FormFiller::Value::Fixed>,L<WWW::Mechanize::FormFiller::Value::Interactive>
+L<WWW::Mechanize>, L<WWW::Mechanize::Shell>, L<WWW::Mechanize::FormFiller>, L<WWW::Mechanize::FormFiller::Value::Value>,
+L<WWW::Mechanize::FormFiller::Value::Default>, L<WWW::Mechanize::FormFiller::Value::Fixed>, L<WWW::Mechanize::FormFiller::Value::Interactive>

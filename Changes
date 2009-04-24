@@ -1,5 +1,10 @@
 Revision history for Perl extension WWW::Mechanize::FormFiller.
 
+0.10 20090424
+  . Distribution fix, no need to update
+  - added MANIFEST.skip to distribution
+  - POD formatting fix thanks to Damyan Ivanov
+
 0.09 20090418
   . Test fix, no need to update
   - Finally remove t/08*, which checked for HTML::Form behaviour which changed

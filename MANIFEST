@@ -1,5 +1,6 @@
 Changes
 MANIFEST			This list of files
+MANIFEST.skip
 Makefile.PL
 README
 lib/WWW/Mechanize/FormFiller.pm
